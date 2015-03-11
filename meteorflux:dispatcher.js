@@ -46,7 +46,7 @@ var invariant = function(condition, error_message, format, a, b, c, d, e, f) {
     var error;
     if ((format === undefined)||(error_message === undefined)) {
       error = new Meteor.Error(
-		'minified-exception',
+        'minified-exception',
         'Minified exception occurred; use the non-minified dev environment ' +
         'for the full error message and additional helpful warnings.'
       );
@@ -54,7 +54,7 @@ var invariant = function(condition, error_message, format, a, b, c, d, e, f) {
       var args = [a, b, c, d, e, f];
       var argIndex = 0;
       error = new Meteor.Error(
-		error_message,
+        error_message,
         'Invariant Violation: ' +
         format.replace(/%s/g, function() { return args[argIndex++]; })
       );
@@ -69,11 +69,11 @@ var invariant = function(condition, error_message, format, a, b, c, d, e, f) {
 */
 
 MeteorFlux.Dispatcher = function(){
-	this._callbacks = {};
-	this._isPending = {};
-	this._isHandled = {};
-	this._isDispatching = false;
-	this._pendingPayload = null;
+  this._callbacks = {};
+  this._isPending = {};
+  this._isHandled = {};
+  this._isDispatching = false;
+  this._pendingPayload = null;
 };
 
 
@@ -85,9 +85,9 @@ MeteorFlux.Dispatcher = function(){
 * @return {string}
 */
 MeteorFlux.Dispatcher.prototype.register = function(callback) {
-	var id = _prefix + _lastID++;
-	this._callbacks[id] = callback;
-	return id;
+  var id = _prefix + _lastID++;
+  this._callbacks[id] = callback;
+  return id;
 };
 
 /**
@@ -96,13 +96,13 @@ MeteorFlux.Dispatcher.prototype.register = function(callback) {
 * @param {string} id
 */
 MeteorFlux.Dispatcher.prototype.unregister = function(id) {
-	invariant(
-		this._callbacks[id],
-		'dispatcher-unregister-not-map',
-		'MeteorFlux.Dispatcher.unregister(...): `%s` does not map to a registered callback.',
-		id
-	);
-	delete this._callbacks[id];
+  invariant(
+    this._callbacks[id],
+    'dispatcher-unregister-not-map',
+    'MeteorFlux.Dispatcher.unregister(...): `%s` does not map to a registered callback.',
+    id
+  );
+  delete this._callbacks[id];
 };
 
 /**
@@ -113,31 +113,31 @@ MeteorFlux.Dispatcher.prototype.unregister = function(id) {
 * @param {array<string>} ids
 */
 MeteorFlux.Dispatcher.prototype.waitFor = function(ids) {
-	invariant(
-		this._isDispatching,
-		'dispatcher-waitfor-invoked-outside-dispatch',
-		'MeteorFlux.Dispatcher.waitFor(...): Must be invoked while dispatching.'
-	);
-	for (var ii = 0; ii < ids.length; ii++) {
-		var id = ids[ii];
-		if (this._isPending[id]) {
-			invariant(
-				this._isHandled[id],
-				'dispatcher-waitfor-circular-dependency',
-				'MeteorFlux.Dispatcher.waitFor(...): Circular dependency detected while ' +
-				'waiting for `%s`.',
-				id
-			);
-			continue;
-		}
-		invariant(
-			this._callbacks[id],
-			'dispatcher-waitfor-invalid-token',
-			'MeteorFlux.Dispatcher.waitFor(...): `%s` does not map to a registered callback.',
-			id
-		);
-		this._invokeCallback(id);
-	}
+  invariant(
+    this._isDispatching,
+    'dispatcher-waitfor-invoked-outside-dispatch',
+    'MeteorFlux.Dispatcher.waitFor(...): Must be invoked while dispatching.'
+  );
+  for (var ii = 0; ii < ids.length; ii++) {
+    var id = ids[ii];
+    if (this._isPending[id]) {
+      invariant(
+        this._isHandled[id],
+        'dispatcher-waitfor-circular-dependency',
+        'MeteorFlux.Dispatcher.waitFor(...): Circular dependency detected while ' +
+        'waiting for `%s`.',
+        id
+      );
+      continue;
+    }
+    invariant(
+      this._callbacks[id],
+      'dispatcher-waitfor-invalid-token',
+      'MeteorFlux.Dispatcher.waitFor(...): `%s` does not map to a registered callback.',
+      id
+    );
+    this._invokeCallback(id);
+  }
 };
 
 /**
@@ -146,22 +146,22 @@ MeteorFlux.Dispatcher.prototype.waitFor = function(ids) {
 * @param {object} payload
 */
 MeteorFlux.Dispatcher.prototype.dispatch = function(payload) {
-	invariant(
-		!this._isDispatching,
-		'dispatcher-cant-dispatch-while-dispatching',
-		'Dispatch.dispatch(...): Cannot dispatch in the middle of a dispatch.'
-	);
-	this._startDispatching(payload);
-	try {
-		for (var id in this._callbacks) {
-			if (this._isPending[id]) {
-				continue;
-			}
-			this._invokeCallback(id);
-		}
-	} finally {
-		this._stopDispatching();
-	}
+  invariant(
+    !this._isDispatching,
+    'dispatcher-cant-dispatch-while-dispatching',
+    'Dispatch.dispatch(...): Cannot dispatch in the middle of a dispatch.'
+  );
+  this._startDispatching(payload);
+  try {
+    for (var id in this._callbacks) {
+      if (this._isPending[id]) {
+        continue;
+      }
+      this._invokeCallback(id);
+    }
+  } finally {
+    this._stopDispatching();
+  }
 };
 
 /**
@@ -170,7 +170,7 @@ MeteorFlux.Dispatcher.prototype.dispatch = function(payload) {
 * @return {boolean}
 */
 MeteorFlux.Dispatcher.prototype.isDispatching = function() {
-	return this._isDispatching;
+  return this._isDispatching;
 };
 
 /**
@@ -181,9 +181,9 @@ MeteorFlux.Dispatcher.prototype.isDispatching = function() {
 * @internal
 */
 MeteorFlux.Dispatcher.prototype._invokeCallback = function(id) {
-	this._isPending[id] = true;
-	this._callbacks[id](this._pendingPayload);
-	this._isHandled[id] = true;
+  this._isPending[id] = true;
+  this._callbacks[id](this._pendingPayload);
+  this._isHandled[id] = true;
 };
 
 /**
@@ -193,12 +193,12 @@ MeteorFlux.Dispatcher.prototype._invokeCallback = function(id) {
 * @internal
 */
 MeteorFlux.Dispatcher.prototype._startDispatching = function(payload) {
-	for (var id in this._callbacks) {
-		this._isPending[id] = false;
-		this._isHandled[id] = false;
-	}
-	this._pendingPayload = payload;
-	this._isDispatching = true;
+  for (var id in this._callbacks) {
+    this._isPending[id] = false;
+    this._isHandled[id] = false;
+  }
+  this._pendingPayload = payload;
+  this._isDispatching = true;
 };
 
 /**
@@ -207,8 +207,8 @@ MeteorFlux.Dispatcher.prototype._startDispatching = function(payload) {
 * @internal
 */
 MeteorFlux.Dispatcher.prototype._stopDispatching = function() {
-	this._pendingPayload = null;
-	this._isDispatching = false;
+  this._pendingPayload = null;
+  this._isDispatching = false;
 };
 
 
@@ -217,11 +217,11 @@ MeteorFlux.Dispatcher.prototype._stopDispatching = function() {
 *
 */
 MeteorFlux.Dispatcher.prototype.reset = function() {
-	this._callbacks = {};
-	this._isPending = {};
-	this._isHandled = {};
-	this._isDispatching = false;
-	this._pendingPayload = null;
+  this._callbacks = {};
+  this._isPending = {};
+  this._isHandled = {};
+  this._isDispatching = false;
+  this._pendingPayload = null;
 };
 
 /**
