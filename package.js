@@ -1,6 +1,6 @@
 Package.describe({
   name: 'meteorflux:dispatcher',
-  version: '1.0.0',
+  version: '1.0.1',
   // Brief, one-line summary of the package.
   summary: 'A Flux Dispatcher for Meteor, based on the Facebook\'s Flux Dispatcher',
   // URL to the Git repository containing the source code for this package.
