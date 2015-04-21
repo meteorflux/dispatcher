@@ -12,13 +12,13 @@ Package.describe({
 
 Package.onUse(function(api) {
   api.versionsFrom('1.0');
-  api.addFiles('meteorflux:dispatcher.js');
+  api.addFiles('dispatcher.js');
   api.export('MeteorFlux');
   api.export('Dispatcher');
 });
 
 Package.onTest(function(api) {
   api.use('tinytest');
-  api.use('meteorflux:dispatcher');
-  api.addFiles('meteorflux:dispatcher-tests.js');
+  api.use('dispatcher');
+  api.addFiles('dispatcher-tests.js');
 });
