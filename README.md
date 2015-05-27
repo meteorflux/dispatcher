@@ -209,13 +209,13 @@ YourStore = {
 }
 ```
 
-**Stores** can't dispatch another **Actions** in the middle of a dispatch, to avoid complex cascading of events.
+**Stores** can't dispatch another **Actions** in the middle of a dispatch, to avoid complex cascading of **Actions**.
 
-That means they must do whatever your app needs to do in response to the original action, without triggering anything else.
+The Flux perspective is that a mutation should not cause another mutation. Instead, mutations are passive, merely responding to things happening "outside" of the application -- the user clicks, the stores modify the app state, and the browser cycles an animation frame.
 
-At first, this may appear very restrictive, but it is very useful. Coming from a [PureMVC](http://puremvc.org/content/view/67/178/) world (event based MVC) I know cascading events can be a hell to debug.
+At first, this may appear restrictive, but it is very useful. Cascading **Actions** are the primary problem that causes complexity in the data layer, leading it to become difficult for engineers to reason about how the **App State** is changing.
 
-The good news is that each time you want to use cascading events you have to think twice and come out with a simpler design.
+Cascading **Actions** are a sign of a design problem. When all **Stores** are receiving all **Actions**, it's always better to simply respond to the original **Action**. 
 
 **Stores** are the only ones which can modify the **App State** and they can  do it only in response to an **Action**. They don't have setters. Actually, there are no setters at all in a Flux application.
 
