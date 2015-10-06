@@ -74,6 +74,7 @@ MeteorFlux.Dispatcher = function(){
   this._isHandled = {};
   this._isDispatching = false;
   this._pendingPayload = null;
+  this._payloadQueue = [];
 };
 
 
@@ -146,21 +147,21 @@ MeteorFlux.Dispatcher.prototype.waitFor = function(ids) {
 * @param {object} payload
 */
 MeteorFlux.Dispatcher.prototype.dispatch = function(payload) {
-  invariant(
-    !this._isDispatching,
-    'dispatcher-cant-dispatch-while-dispatching',
-    'Dispatch.dispatch(...): Cannot dispatch in the middle of a dispatch.'
-  );
-  this._startDispatching(payload);
-  try {
-    for (var id in this._callbacks) {
-      if (this._isPending[id]) {
-        continue;
+  if (this._isDispatching) {
+    // Queue the payload, don't just ignore it
+    this._payloadQueue.push(payload);
+  } else {
+    this._startDispatching(payload);
+    try {
+      for (var id in this._callbacks) {
+        if (this._isPending[id]) {
+          continue;
+        }
+        this._invokeCallback(id);
       }
-      this._invokeCallback(id);
+    } finally {
+      this._stopDispatching();
     }
-  } finally {
-    this._stopDispatching();
   }
 };
 
@@ -209,6 +210,10 @@ MeteorFlux.Dispatcher.prototype._startDispatching = function(payload) {
 MeteorFlux.Dispatcher.prototype._stopDispatching = function() {
   this._pendingPayload = null;
   this._isDispatching = false;
+
+  if (this._payloadQueue.length > 0) {
+    this.dispatch(this._payloadQueue.pop());
+  }
 };
 
 
@@ -222,6 +227,7 @@ MeteorFlux.Dispatcher.prototype.reset = function() {
   this._isHandled = {};
   this._isDispatching = false;
   this._pendingPayload = null;
+  this._payloadQueue = [];
 };
 
 /**
